@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Wenchang Aerospace City · Watch &amp; Fill — FTP Unit 3 Warm-up</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0;
+      font-family: 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', sans-serif; }
+  body { min-height: 100vh; background: linear-gradient(145deg, #0b1a3a 0%, #1b3b6f 100%);
+         display: flex; justify-content: center; align-items: center; padding: 12px; }
+  .wrapper { background: #fef9e7; border-radius: 40px; border: 6px solid #ffb347;
+             box-shadow: 0 20px 30px rgba(0,0,0,.6), inset 0 -5px 0 #d4b48c;
+             padding: 14px 18px 18px; max-width: 1060px; width: 100%;
+             height: 96vh; max-height: 820px; display: flex; flex-direction: column;
+             background-image: radial-gradient(circle at 20% 20%, #fff9e6 0%, #fef3d6 100%); }
+
+  /* ---------- top ---------- */
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            margin-bottom: 10px; flex-shrink: 0; }
+  .logo { font-weight: 900; font-size: 1.12rem; color: #0e4c74; line-height: 1.15; }
+  .logo small { display: block; font-size: .66rem; letter-spacing: 2px;
+                color: #1e88c7; font-weight: 700; }
+  .tabs { display: flex; gap: 8px; margin-left: auto; }
+  .tab { border: 3px solid #7aa5d9; background: #e8f0fe; color: #2a3b4c; border-radius: 40px;
+         padding: 7px 16px; font-weight: 800; font-size: .92rem; cursor: pointer;
+         box-shadow: 0 4px 0 #3f5e8c; transition: all .07s; }
+  .tab:active { transform: translateY(3px); box-shadow: 0 1px 0 #3f5e8c; }
+  .tab.active { background: #0e4c74; color: #fff; border-color: #0e4c74; box-shadow: 0 4px 0 #062a42; }
+  .panel { flex: 1; min-height: 0; overflow: auto; border-radius: 24px; }
+  .hidden { display: none !important; }
+
+  /* ---------- watch ---------- */
+  .watch-grid { display: flex; flex-direction: column; gap: 12px; }
+  .video-card { background: #0b1a3a; border-radius: 24px; border: 4px solid #7aa5d9; padding: 10px; }
+  .video-card video { width: 100%; max-height: 40vh; display: block; border-radius: 16px; background: #000; }
+  .video-tip { color: #cfe3f7; font-size: .84rem; text-align: center; padding-top: 6px; }
+  .task-card { background: #fff; border: 4px dashed #ffb347; border-radius: 24px; padding: 14px 18px; }
+  .task-title { font-weight: 900; color: #e63946; font-size: 1.05rem; margin-bottom: 4px; }
+  .task-card p { color: #3e5566; font-size: .92rem; margin-bottom: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 2px solid #7aa5d9; background: #eef6fd; color: #0e4c74; border-radius: 30px;
+          padding: 6px 14px; font-weight: 800; font-size: .92rem; cursor: pointer;
+          display: inline-flex; flex-direction: column; align-items: center; gap: 1px;
+          transition: all .12s; box-shadow: 0 3px 0 #c3d7ea; }
+  .chip .en { font-weight: 800; font-size: .95rem; line-height: 1.15; }
+  .chip .cn { font-size: .72rem; font-weight: 700; color: #5b86b5; line-height: 1.1; }
+  .chip.heard { background: #6aa84f; border-color: #3f6b2b; color: #fff; box-shadow: 0 3px 0 #3f6b2b; }
+  .chip.heard .en::after { content: " ✓"; }
+  .chip.heard .cn { color: #e8f7e2; }
+  .chip-count { margin-top: 10px; font-weight: 900; color: #0e4c74; }
+  .go-btn { background: #f05454; color: #fff; border: 3px solid #ffb3b3; border-radius: 40px;
+            padding: 10px 26px; font-size: 1.02rem; font-weight: 900; cursor: pointer;
+            box-shadow: 0 6px 0 #9e2b2b; }
+  .go-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #9e2b2b; }
+  .go-btn.green { background: #6aa84f; border-color: #b6e3a0; box-shadow: 0 6px 0 #3f6b2b; }
+  .ghost-btn { background: #fff; color: #0e4c74; border: 3px solid #7aa5d9; border-radius: 40px;
+               padding: 10px 22px; font-size: 1.02rem; font-weight: 800; cursor: pointer;
+               box-shadow: 0 6px 0 #c3d7ea; }
+  .ghost-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c3d7ea; }
+  .mt10 { margin-top: 12px; display: inline-block; }
+
+  /* ---------- fill in ---------- */
+  .hud { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .pill { background: #ffd966; border: 3px solid #b38b40; border-radius: 40px; padding: 4px 16px;
+          font-weight: 900; color: #2d2d2d; font-size: 1.02rem; box-shadow: inset 0 -4px 0 #c99f3c; }
+  .pill.green { background: #b5e6b5; border-color: #5f9e5f; box-shadow: inset 0 -4px 0 #7fb37f; }
+  .hud .spacer { flex: 1; }
+  .mini-btn { background: #e8f0fe; border: 3px solid #7aa5d9; border-radius: 40px; padding: 5px 14px;
+              font-weight: 800; color: #0e4c74; cursor: pointer; }
+  .mini-video { margin-bottom: 10px; background: #0b1a3a; border: 4px solid #7aa5d9;
+                border-radius: 20px; padding: 8px; }
+  .mini-video video { width: 100%; max-height: 28vh; display: block; border-radius: 12px; background: #000; }
+
+  .gap-card { background: #fff; border: 4px solid #7aa5d9; border-radius: 24px;
+              padding: 16px 20px; }
+  .passage { font-family: Georgia, 'Times New Roman', serif; font-size: 1.06rem;
+             line-height: 2.45; color: #3e5566; }
+  .blank { display: inline-flex; align-items: baseline; gap: 3px; min-width: 92px;
+           justify-content: center;
+           border-bottom: 3px solid #b9c8d6; border-radius: 5px 5px 0 0; padding: 1px 7px 0;
+           margin: 0 3px; color: #9fb0bf; font-weight: 800;
+           transition: background .12s, color .12s, border-color .12s; }
+  .blank .bn { font-size: .68rem; color: #1e88c7; font-weight: 800;
+               vertical-align: super; letter-spacing: 0; }
+  .blank.dim { opacity: .5; }
+  .blank.current { border-bottom-color: #e63946; color: #e63946; background: #fff8e6;
+                   outline: 3px dashed #ffb347; outline-offset: 2px;
+                   animation: pulse 1.4s ease-in-out infinite; }
+  .blank.ok { color: #24691f; background: #dcf5dc; border-bottom-color: #24691f;
+              opacity: 1; outline: none; animation: none; }
+  .blank.bad { color: #a51f1f; background: #ffe1e1; border-bottom-color: #a51f1f;
+               animation: shake .35s ease; }
+  @keyframes shake { 0%{transform:translateX(0)} 20%{transform:translateX(-6px)}
+                     45%{transform:translateX(6px)} 70%{transform:translateX(-4px)}
+                     100%{transform:translateX(0)} }
+  @keyframes pulse { 0%,100%{background:#fff8e6} 50%{background:#ffefc0} }
+
+  .bank-card { margin-top: 12px; background: #fff3cd; border: 4px solid #ffb347;
+               border-radius: 24px; padding: 12px 16px; box-shadow: 0 6px 0 #b36b1e; }
+  .bank-label { font-size: .74rem; letter-spacing: 1px; text-transform: uppercase;
+                color: #a1601a; font-weight: 800; margin-bottom: 8px; }
+  .bank { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bank .chip { background: #fff; border-color: #b36b1e; color: #8a4a00; font-size: 1rem;
+                padding: 8px 16px; box-shadow: 0 3px 0 #e0b26a; }
+  .bank .chip:hover { background: #fffbe9; }
+  .bank .chip.used { opacity: .3; background: #efe6d2; border-color: #cbbfa6; color: #8a8272;
+                     text-decoration: line-through; box-shadow: none; pointer-events: none; }
+  .bank .chip.wrong { background: #ffdede; border-color: #c0392b; color: #a51f1f;
+                      animation: shake .35s ease; }
+  .feedback { margin-top: 10px; font-weight: 800; color: #0e4c74; min-height: 1.4em;
+              font-size: .98rem; }
+  .feedback.bad { color: #a51f1f; }
+  .feedback.good { color: #24691f; }
+
+  /* ---------- overlay ---------- */
+  .overlay { position: fixed; inset: 0; background: rgba(10,20,40,.75); display: flex;
+             justify-content: center; align-items: center; z-index: 200;
+             visibility: hidden; opacity: 0; transition: opacity .2s; }
+  .overlay.show { visibility: visible; opacity: 1; }
+  .card { background: #ffefc0; border-radius: 50px; padding: 32px 52px; text-align: center;
+          border: 8px solid #ffb347; box-shadow: 0 16px 0 #8f5e2e; max-width: 90vw; }
+  .card h2 { font-size: 2.1rem; color: #f05454; font-weight: 900; margin-bottom: 8px; }
+  .card p { font-size: 1.2rem; color: #2a3b4c; font-weight: 700; margin-bottom: 16px; }
+  .card button { background: #6aa84f; border: none; padding: 12px 38px; font-size: 1.25rem;
+                 font-weight: 900; border-radius: 40px; color: #fff; cursor: pointer;
+                 box-shadow: 0 8px 0 #3f6b2b; }
+
+  @media (max-width: 700px) {
+    .wrapper { padding: 10px; height: 98vh; border-radius: 26px; }
+    .logo { font-size: .95rem; }
+    .tab { padding: 6px 10px; font-size: .78rem; }
+    .passage { font-size: .98rem; line-height: 2.3; }
+    .blank { min-width: 74px; }
+    .bank .chip { font-size: .88rem; padding: 7px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="topbar">
+    <div class="logo">🚀 Wenchang International Aerospace City
+      <small>FTP UNIT 3 · WARM-UP · WATCH &amp; FILL</small></div>
+    <div class="tabs">
+      <button class="tab active" data-tab="watch">📺 1 · Watch &amp; Key Words</button>
+      <button class="tab" data-tab="fill">✏️ 2 · Fill in the paragraph</button>
+    </div>
+  </div>
+
+  <!-- ================= WATCH ================= -->
+  <div class="panel" id="panel-watch">
+    <div class="watch-grid">
+      <div class="video-card">
+        <video controls playsinline preload="metadata">
+          
+          <source src="warm-up.mp4" type="video/mp4">
+        </video>
+        <div class="video-tip">▶ Watch the warm-up video about Wenchang International Aerospace City.</div>
+      </div>
+      <div class="task-card">
+        <div class="task-title">🎧 Listen while you watch</div>
+        <p>Here are the 10 key words of this unit (English — 中文). Tap a word when you hear it in the video.</p>
+        <div class="chips" id="chips"></div>
+        <div class="chip-count">Words spotted: <span id="chipCount">0</span> / 10</div>
+        <button class="go-btn mt10" data-goto="fill">I'm ready — Fill in the paragraph ✏️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FILL IN ================= -->
+  <div class="panel hidden" id="panel-fill">
+    <div class="hud">
+      <div class="pill green">✅ <span id="scoreDisplay">0</span> / 10 correct</div>
+      <div class="pill">🔤 Word bank: <span id="bankCount">10</span> left</div>
+      <div class="spacer"></div>
+      <button class="mini-btn" id="videoToggle">🔁 Video</button>
+      <button class="mini-btn" id="restartButton">🔄 Restart</button>
+    </div>
+
+    <div class="mini-video hidden" id="miniVideo">
+      <video controls playsinline preload="none">
+        
+        <source src="warm-up.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="gap-card">
+      <p class="passage" id="passagePara"></p>
+    </div>
+
+    <div class="bank-card">
+      <div class="bank-label">Word bank — tap the word that fits the red blank</div>
+      <div class="bank" id="bank"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="card">
+    <h2 id="ovTitle">🚀 Perfect!</h2>
+    <p id="ovText">You filled all 10 blanks!</p>
+    <button id="ovBtn">Fill it again</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* ================= data ================= */
+  const WORDS = [
+    { word: 'hub',                     phon: 'hʌb',                     cn: '枢纽；中心' },
+    { word: 'commercial',              phon: 'kəˈmɜːʃl',                 cn: '商业的；商贸的' },
+    { word: 'launch site',             phon: 'lɔːntʃ saɪt',              cn: '发射场；发射基地' },
+    { word: 'assembly',                phon: 'əˈsembli',                 cn: '装配；总装' },
+    { word: 'infrastructure',          phon: 'ˈɪnfrəstrʌktʃə(r)',        cn: '基础设施' },
+    { word: 'remote sensing',          phon: 'rɪˌməʊt ˈsensɪŋ',          cn: '遥感' },
+    { word: 'Belt and Road',           phon: 'ˌbelt ən ˈrəʊd',           cn: '一带一路' },
+    { word: 'BRICS',                   phon: 'brɪks',                    cn: '金砖国家' },
+    { word: 'manufacturing',           phon: 'ˌmænjuˈfæktʃərɪŋ',         cn: '制造业；制造' },
+    { word: 'sustainable development', phon: 'səˌsteɪnəbl dɪˈveləpmənt', cn: '可持续发展' },
+  ];
+  const GLOSS = {};
+  WORDS.forEach(w => { GLOSS[w.word] = w.cn; });
+
+  const PASSAGE = [
+    { t: 'Wenchang International Aerospace City is a major ' }, { b: 'hub' },
+    { t: " for China's " },                                     { b: 'commercial' },
+    { t: " space industry. It hosts the country's first commercial space " }, { b: 'launch site' },
+    { t: ', where rockets carrying satellites move straight from ' },         { b: 'assembly' },
+    { t: ' to launch, ready to lift off as soon as they leave the factory. The city also uses the Free Trade Port\'s data policy and its modern ' }, { b: 'infrastructure' },
+    { t: ' to attract rocket, satellite and satellite-data companies. Cooperation is another focus: using a ' }, { b: 'remote sensing' },
+    { t: ' AI model, the city provides satellite data services to ' },       { b: 'Belt and Road' },
+    { t: ' countries and ' },                                                { b: 'BRICS' },
+    { t: ' countries, and it will soon offer satellite ' },                  { b: 'manufacturing' },
+    { t: ' and launch services to support their ' },                         { b: 'sustainable development' },
+    { t: '.' },
+  ];
+
+  /* ================= helpers ================= */
+  const $ = id => document.getElementById(id);
+  const speech = window.speechSynthesis || null;
+  function speak(text) {
+    if (!speech) return;
+    speech.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.9;
+    speech.speak(u);
+  }
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function say(msg, kind) {          // kind: '' | 'bad' | 'good'
+    const f = $('feedback');
+    f.textContent = msg;
+    f.classList.remove('bad', 'good');
+    if (kind) f.classList.add(kind);
+  }
+
+  /* ================= tabs ================= */
+  const videos = () => Array.from(document.querySelectorAll('video'));
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      ['watch', 'fill'].forEach(t =>
+        $('panel-' + t).classList.toggle('hidden', t !== btn.dataset.tab));
+      if (btn.dataset.tab !== 'watch' && btn.dataset.tab !== 'fill') videos().forEach(v => v.pause());
+      if (btn.dataset.tab !== 'fill') $('miniVideo').classList.add('hidden');
+    });
+  });
+  document.querySelectorAll('[data-goto]').forEach(b =>
+    b.addEventListener('click', () => document.querySelector('.tab[data-tab="' + b.dataset.goto + '"]').click()));
+  $('videoToggle').addEventListener('click', () => $('miniVideo').classList.toggle('hidden'));
+
+  /* ================= watch · 10 key words (EN + 中文) ================= */
+  let spotted = 0;
+  WORDS.forEach(w => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.innerHTML = '<span class="en"></span><span class="cn"></span>';
+    b.children[0].textContent = w.word;
+    b.children[1].textContent = w.cn;
+    b.addEventListener('click', () => {
+      speak(w.word);
+      if (b.classList.contains('heard')) return;
+      b.classList.add('heard'); spotted++;
+      $('chipCount').textContent = spotted;
+    });
+    $('chips').appendChild(b);
+  });
+
+  /* ================= fill in · one blank at a time ================= */
+  const blanks = [];            // {el, answer, filled, tries}
+  let activeIndex = 0, solved = 0, revealed = false;
+
+  function buildParagraph() {
+    const p = $('passagePara');
+    p.innerHTML = ''; blanks.length = 0;
+    let n = 0;
+    PASSAGE.forEach(seg => {
+      if (seg.t !== undefined) {
+        p.appendChild(document.createTextNode(seg.t));
+      } else {
+        n++;
+        const el = document.createElement('span');
+        el.className = 'blank';
+        el.dataset.n = n;
+        el.innerHTML = '<span class="bn">(' + n + ')</span><span class="bw">______</span>';
+        el.addEventListener('click', () => onBlankClick(n - 1));
+        p.appendChild(el);
+        blanks.push({ el, answer: seg.b, filled: false, tries: 0 });
+      }
+    });
+  }
+
+  function paintStates() {
+    blanks.forEach((b, i) => {
+      b.el.classList.remove('current', 'dim');
+      if (b.filled) return;
+      if (i === activeIndex) b.el.classList.add('current');
+      else b.el.classList.add('dim');
+    });
+  }
+
+  function buildBank() {
+    const bank = $('bank');
+    bank.innerHTML = '';
+    shuffle(WORDS.map(w => w.word)).forEach(w => {
+      const c = document.createElement('button');
+      c.className = 'chip'; c.textContent = w; c.dataset.word = w;
+      c.addEventListener('click', () => onChipClick(c));
+      bank.appendChild(c);
+    });
+    updateBankCount();
+  }
+
+  function updateBankCount() {
+    const left = Array.from($('bank').children).filter(c => !c.classList.contains('used')).length;
+    $('bankCount').textContent = left;
+  }
+
+  function onChipClick(chip) {
+    if (revealed || chip.classList.contains('used')) return;
+    const blank = blanks[activeIndex];
+    if (!blank) return;
+    const word = chip.dataset.word;
+
+    if (word === blank.answer) {                       // ✅ 答对 → 才能进入下一空
+      blank.filled = true; blank.tries = 0;
+      blank.el.querySelector('.bw').textContent = word;
+      blank.el.classList.remove('current', 'dim', 'bad');
+      blank.el.classList.add('ok');
+      chip.classList.add('used');
+      solved++; $('scoreDisplay').textContent = solved;
+      speak(word);
+      while (activeIndex < blanks.length && blanks[activeIndex].filled) activeIndex++;
+      updateBankCount();
+      paintStates();
+      if (solved === blanks.length) {
+        say('🎉 Perfect — all 10 blanks are correct!', 'good');
+        $('ovTitle').textContent = '🚀 Perfect!';
+        $('ovText').textContent = 'You filled all 10 blanks correctly. Read the paragraph aloud!';
+        $('overlay').classList.add('show');
+      } else {
+        say('✅ Correct! Now fill blank (' + (activeIndex + 1) + ').', 'good');
+      }
+      return;
+    }
+
+    /* ❌ 选错 → 立即提示，留在本空 */
+    blank.tries++;
+    chip.classList.add('wrong');
+    blank.el.classList.add('bad');
+    setTimeout(() => {
+      chip.classList.remove('wrong');
+      blank.el.classList.remove('bad');
+    }, 700);
+    let msg = '❌ Sorry, "' + word + '" does not go in blank (' + (activeIndex + 1) + '). Try again 👇';
+    if (blank.tries >= 2) {
+      const first = blank.answer.charAt(0).toUpperCase();
+      msg += '  💡 Hint: it starts with "' + first + '…" and means "' + GLOSS[blank.answer] + '".';
+    }
+    say(msg, 'bad');
+  }
+
+  function onBlankClick(i) {
+    if (revealed) return;
+    if (blanks[i].filled) { say('Blank (' + (i + 1) + ') is already correct ✅'); return; }
+    if (i !== activeIndex) {
+      say('👆 Only blank (' + (activeIndex + 1) + ') is open — finish it first.');
+      blanks[activeIndex].el.classList.add('bad');
+      setTimeout(() => blanks[activeIndex].el.classList.remove('bad'), 700);
+      return;
+    }
+    blanks[i].el.classList.add('bad');
+    setTimeout(() => blanks[i].el.classList.remove('bad'), 700);
+    say('Tap the word that fits blank (' + (activeIndex + 1) + ') in the word bank 👇');
+  }
+
+  function resetFill() {
+    revealed = false; solved = 0; activeIndex = 0;
+    $('scoreDisplay').textContent = '0';
+    $('overlay').classList.remove('show');
+    $('feedback').classList.remove('bad', 'good');
+    buildParagraph(); buildBank(); paintStates();
+    say('Fill blank (1) first — tap the correct word in the word bank 👇');
+  }
+
+  $('restartButton').addEventListener('click', resetFill);
+  $('ovBtn').addEventListener('click', resetFill);
+
+  resetFill();
+})();
+</script>
+</body>
+</html>
