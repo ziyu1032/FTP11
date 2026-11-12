@@ -184,6 +184,9 @@
     </div>
 
     <div class="gap-card">
+      <div style="text-align:right; margin-bottom:4px;">
+        <button class="go-btn green" id="readBtn" style="display:none; padding:8px 22px; font-size:.98rem;">🔊 Read the whole paragraph</button>
+      </div>
       <p class="passage" id="passagePara"></p>
     </div>
 
@@ -193,14 +196,6 @@
     </div>
 
     <div class="feedback" id="feedback"></div>
-  </div>
-</div>
-
-<div class="overlay" id="overlay">
-  <div class="card">
-    <h2 id="ovTitle">🚀 Perfect!</h2>
-    <p id="ovText">You filled all 10 blanks!</p>
-    <button id="ovBtn">Fill it again</button>
   </div>
 </div>
 
@@ -220,7 +215,8 @@
     { word: 'sustainable development', phon: 'səˌsteɪnəbl dɪˈveləpmənt', cn: '可持续发展' },
   ];
   const GLOSS = {};
-  WORDS.forEach(w => { GLOSS[w.word] = w.cn; });
+  const WORD_INDEX = {};
+  WORDS.forEach((w, i) => { GLOSS[w.word] = w.cn; WORD_INDEX[w.word] = i; });
 
   const PASSAGE = [
     { t: 'Wenchang International Aerospace City is a major ' }, { b: 'hub' },
@@ -238,14 +234,14 @@
 
   /* ================= helpers ================= */
   const $ = id => document.getElementById(id);
-  const speech = window.speechSynthesis || null;
-  function speak(text) {
-    if (!speech) return;
-    speech.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'en-US'; u.rate = 0.9;
-    speech.speak(u);
+  /* 真人男声美式发音：预生成 MP3（en-US-AndrewNeural），点击即播 */
+  let curAudio = null;
+  function playClip(src) {
+    try { if (curAudio) { curAudio.pause(); curAudio.currentTime = 0; } } catch (e) {}
+    curAudio = new Audio(src);
+    curAudio.play().catch(() => {});
   }
+  function wordAudio(word) { return 'audio_w' + String(WORD_INDEX[word] + 1).padStart(2, '0') + '.mp3'; }
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -285,7 +281,7 @@
     b.children[0].textContent = w.word;
     b.children[1].textContent = w.cn;
     b.addEventListener('click', () => {
-      speak(w.word);
+      playClip(wordAudio(w.word));
       if (b.classList.contains('heard')) return;
       b.classList.add('heard'); spotted++;
       $('chipCount').textContent = spotted;
@@ -356,15 +352,13 @@
       blank.el.classList.add('ok');
       chip.classList.add('used');
       solved++; $('scoreDisplay').textContent = solved;
-      speak(word);
+      /* 不再逐词发音；全部填完后出现 🔊 朗读整段 */
       while (activeIndex < blanks.length && blanks[activeIndex].filled) activeIndex++;
       updateBankCount();
       paintStates();
       if (solved === blanks.length) {
-        say('🎉 Perfect — all 10 blanks are correct!', 'good');
-        $('ovTitle').textContent = '🚀 Perfect!';
-        $('ovText').textContent = 'You filled all 10 blanks correctly. Read the paragraph aloud!';
-        $('overlay').classList.add('show');
+        say('🎉 Perfect — all 10 blanks are correct! Tap 🔊 to listen to the whole paragraph.', 'good');
+        $('readBtn').style.display = 'inline-block';
       } else {
         say('✅ Correct! Now fill blank (' + (activeIndex + 1) + ').', 'good');
       }
@@ -404,14 +398,15 @@
   function resetFill() {
     revealed = false; solved = 0; activeIndex = 0;
     $('scoreDisplay').textContent = '0';
-    $('overlay').classList.remove('show');
+    $('readBtn').style.display = 'none';
+    try { if (curAudio) { curAudio.pause(); curAudio.currentTime = 0; } } catch (e) {}
     $('feedback').classList.remove('bad', 'good');
     buildParagraph(); buildBank(); paintStates();
     say('Fill blank (1) first — tap the correct word in the word bank 👇');
   }
 
   $('restartButton').addEventListener('click', resetFill);
-  $('ovBtn').addEventListener('click', resetFill);
+  $('readBtn').addEventListener('click', () => playClip('audio_paragraph.mp3'));
 
   resetFill();
 })();
