@@ -194,9 +194,6 @@
     </div>
 
     <div class="gap-card">
-      <div style="text-align:right; margin-bottom:4px;">
-        <button class="go-btn green" id="readBtn" style="display:none; padding:8px 22px; font-size:.98rem;">🔊 Read the whole paragraph</button>
-      </div>
       <p class="passage" id="passagePara"></p>
     </div>
 
@@ -206,6 +203,11 @@
         <button class="bank-toggle" id="bankToggle">Hide ▾</button>
       </div>
       <div class="bank" id="bank"></div>
+    </div>
+
+    <!-- 全部填完后出现在页面最下方：朗读整段（播放中可暂停 / 继续） -->
+    <div style="text-align:center; margin:14px 0 4px;">
+      <button class="go-btn green" id="readBtn" style="display:none; padding:10px 26px; font-size:1rem;">🔊 Read the whole paragraph</button>
     </div>
 
     <div class="feedback" id="feedback"></div>
@@ -248,11 +250,25 @@
   /* ================= helpers ================= */
   const $ = id => document.getElementById(id);
   /* 真人男声美式发音：预生成 MP3（en-US-AndrewNeural），点击即播 */
-  let curAudio = null;
+  let curAudio = null, curSrc = '';
+  /* 朗读按钮状态：null 未播放 | 'playing' 播放中 | 'paused' 已暂停 */
+  function setReadBtn(state) {
+    const b = $('readBtn');
+    if (state === 'playing') b.textContent = '⏸ Pause the reading';
+    else if (state === 'paused') b.textContent = '▶ Continue the reading';
+    else b.textContent = '🔊 Read the whole paragraph';
+  }
   function playClip(src) {
     try { if (curAudio) { curAudio.pause(); curAudio.currentTime = 0; } } catch (e) {}
+    setReadBtn(null);                        // 换音频时朗读按钮复位
+    curSrc = src;
     curAudio = new Audio(src);
+    curAudio.onended = () => { if (curSrc === 'audio_paragraph.mp3') setReadBtn(null); }; // 播完自动复位
     curAudio.play().catch(() => {});
+  }
+  function stopAllAudio() {
+    try { if (curAudio) { curAudio.pause(); curAudio.currentTime = 0; } } catch (e) {}
+    setReadBtn(null);
   }
   function wordAudio(word) { return 'audio_w' + String(WORD_INDEX[word] + 1).padStart(2, '0') + '.mp3'; }
   function shuffle(a) {
@@ -278,7 +294,7 @@
       ['watch', 'fill'].forEach(t =>
         $('panel-' + t).classList.toggle('hidden', t !== btn.dataset.tab));
       if (btn.dataset.tab !== 'watch' && btn.dataset.tab !== 'fill') videos().forEach(v => v.pause());
-      if (btn.dataset.tab !== 'fill') $('miniVideo').classList.add('hidden');
+      if (btn.dataset.tab !== 'fill') { $('miniVideo').classList.add('hidden'); stopAllAudio(); }
     });
   });
   document.querySelectorAll('[data-goto]').forEach(b =>
@@ -420,14 +436,29 @@
     revealed = false; solved = 0; activeIndex = 0;
     $('scoreDisplay').textContent = '0';
     $('readBtn').style.display = 'none';
-    try { if (curAudio) { curAudio.pause(); curAudio.currentTime = 0; } } catch (e) {}
+    stopAllAudio();
     $('feedback').classList.remove('bad', 'good');
     buildParagraph(); buildBank(); paintStates();
     say('Fill blank (1) first — tap the correct word in the word bank 👇');
   }
 
   $('restartButton').addEventListener('click', resetFill);
-  $('readBtn').addEventListener('click', () => playClip('audio_paragraph.mp3'));
+  /* 朗读整段：点击播放 → 再点暂停 → 再点继续；播放中按钮显示暂停图标 */
+  $('readBtn').addEventListener('click', () => {
+    const isPara = curAudio && curSrc === 'audio_paragraph.mp3';
+    if (isPara && !curAudio.paused) {          // 播放中 → 暂停
+      curAudio.pause();
+      setReadBtn('paused');
+      return;
+    }
+    if (isPara && curAudio.paused && !curAudio.ended) {  // 暂停中 → 继续
+      curAudio.play().catch(() => {});
+      setReadBtn('playing');
+      return;
+    }
+    playClip('audio_paragraph.mp3');           // 首次播放 / 已播完 / 刚点过单词发音
+    setReadBtn('playing');
+  });
 
   resetFill();
 })();
